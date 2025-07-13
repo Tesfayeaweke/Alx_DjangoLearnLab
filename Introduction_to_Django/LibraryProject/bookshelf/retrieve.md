@@ -1,9 +1,4 @@
->>> Book.objects.all()
-<QuerySet [<Book: 1984>]>
->>> books = Book.objects.first()
->>> books.author
-'George Orwell'
->>> books.title
-'1984'
->>> books.publication_year
-1949
+from bookshelf.models import Book
+book = Book.objects.get(title="1984")
+print(book.title, book.author, book.publication_year)
+# Expected output: 1984 George Orwell 1949
