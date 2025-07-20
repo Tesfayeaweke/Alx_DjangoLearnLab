@@ -7,10 +7,9 @@ for author in authors:
              print(book.title)
 
 # List all books in a library.
-library = Library.objects.all()
-for item in library:
-    for book in item.books.all():
-        print(book.title)
+library = Library.objects.get(name='University Archive')
+for book in library.books.all():
+     print(book.title)
 
 # Retrieve the librarian for a library.
 librarian = Librarian.objects.all()

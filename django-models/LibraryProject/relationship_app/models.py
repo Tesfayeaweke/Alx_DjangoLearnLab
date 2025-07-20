@@ -12,7 +12,7 @@ class Book(models.Model):
     def __str__(self):
         return self.title
     
-class library(models.Model):
+class Library(models.Model):
     name  = models.CharField(100)
     books = models.ManyToManyField(Book)
     def __str__(self):
@@ -20,6 +20,6 @@ class library(models.Model):
     
 class Librarian(models.Model):
     name = models.CharField(100)
-    Library = models.OneToOneField(Library,on_delete= models.CASCADE,related_name='librarian')
+    library = models.OneToOneField(Library,on_delete= models.CASCADE,related_name='librarian')
     def __str__(self):
         return self.name
