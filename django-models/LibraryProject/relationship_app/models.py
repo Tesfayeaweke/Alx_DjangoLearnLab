@@ -12,7 +12,7 @@ class Book(models.Model):
     def __str__(self):
         return self.title
     
-class Library(models.Model):
+class library(models.Model):
     name  = models.CharField(100)
     books = models.ManyToManyField(Book)
     def __str__(self):
