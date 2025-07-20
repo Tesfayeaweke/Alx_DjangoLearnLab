@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import login
-from django.contrib.auth.decorators import login_required, user_passes_test, permission_required
+from django.contrib.auth.decorators import permission_required,login_required, user_passes_test
 from django.contrib.auth.models import User # Import User model if you need to access it directly
 from .models import UserProfile # Import your UserProfile model to use its role constants
 from .forms import BookForm
