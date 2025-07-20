@@ -127,4 +127,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = '/'       # Where to go after successful login
 LOGOUT_REDIRECT_URL = 'login'  # Where to go after logout
 LOGIN_URL = 'login'            # Where Django redirects unauthenticated users
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
