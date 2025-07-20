@@ -15,7 +15,10 @@ urlpatterns = [
     path('librarian_area/', views.librarian_view, name='librarian_area'),
     path('member_area/', views.member_view, name='member_area'),
 
-
+    path('books/', views.book_list_all, name='book_list_all'), 
+    path('books/add/', views.book_create, name='book_add'),
+    path('books/<int:pk>/edit/', views.book_update, name='book_edit'),
+    path('books/<int:pk>/delete/', views.book_delete, name='book_delete'),
 
 
 
