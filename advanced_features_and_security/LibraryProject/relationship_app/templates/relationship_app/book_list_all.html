@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Books</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
+        .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); width: 80%; max-width: 900px; text-align: center; }
+        h2 { color: #333; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .links { margin-top: 20px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .links a { background-color: #007bff; color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; font-size: 16px; }
+        .links a:hover { background-color: #0056b3; }
+        .action-links a { margin-right: 10px; color: #007bff; text-decoration: none; }
+        .action-links a:hover { text-decoration: underline; }
+        .messages { list-style: none; padding: 0; margin: 0 0 15px 0; }
+        .messages li { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; padding: 10px; margin-bottom: 10px; }
+        .messages .error { background-color: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>All Books</h2>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="links">
+            {% if perms.relationship_app.can_add_book %}
+                <a href="{% url 'book_add' %}">Add New Book</a>
+            {% endif %}
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        </div>
+
+        {% if books %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Publication Year</th>
+                        <th>ISBN</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                        <tr>
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.author.name }}</td> {# Assumes author has a 'name' field #}
+                            <td>{{ book.publication_year }}</td>
+                            <td>{{ book.isbn|default:"N/A" }}</td>
+                            <td class="action-links">
+                                {% if perms.relationship_app.can_change_book %}
+                                    <a href="{% url 'book_edit' book.pk %}">Edit</a>
+                                {% endif %}
+                                {% if perms.relationship_app.can_delete_book %}
+                                    <a href="{% url 'book_delete' book.pk %}">Delete</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No books found. {% if perms.relationship_app.can_add_book %}<a href="{% url 'book_add' %}">Add one?</a>{% endif %}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
