@@ -16,11 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,include
+from django.conf import settings # Needed for static files in development
+from django.conf.urls.static import static # Needed for static files in development
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('relationship_app.urls')),
+    path('', include('bookshelf.urls')), # IMPORTANT: Include bookshelf app URLs
     # path('relationship/',include('relationship_app.urls')),
     # path('relationship/',include('relationship_app.urls')),
     # path('relationship/',include('relationship_app.urls')),
 ]
+
+# Serve media files during development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

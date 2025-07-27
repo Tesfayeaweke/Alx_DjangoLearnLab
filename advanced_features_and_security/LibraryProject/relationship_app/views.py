@@ -10,7 +10,7 @@ from django.contrib.auth.models import User # Import User model if you need to a
 from .models import UserProfile # Import your UserProfile model to use its role constants
 from .forms import BookForm
 
-CustomUser = get_user_model()
+
 def list_books(request):
     books = Book.objects.all()
     context = {'book_list': books}

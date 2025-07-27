@@ -130,4 +130,6 @@ LOGIN_REDIRECT_URL = '/'       # Where to go after successful login
 LOGOUT_REDIRECT_URL = 'login'  # Where to go after logout
 LOGIN_URL = 'login'            # Where Django redirects unauthenticated users
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media' # This will create a 'media' folder in your project root
 

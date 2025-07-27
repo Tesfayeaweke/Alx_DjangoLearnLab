@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 
 CustomUser = get_user_model()
 
-@receiver(post_save, sender=CustomUser) # Decorator: This function will be called after a User object is saved
+@receiver(post_save, sender=User) # Decorator: This function will be called after a User object is saved
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
         # If a new User was just created, create a corresponding UserProfile
