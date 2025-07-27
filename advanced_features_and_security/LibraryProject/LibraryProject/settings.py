@@ -15,7 +15,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -25,11 +24,9 @@ SECRET_KEY = 'django-insecure-9xqsh*8#gqd)*^#k9807%@o96)wv&u@e#6yu7)9+oh_m9tjnx@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'yourdomain.com'] # Example for production
-
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'yourdomain.com']  # Example for production
 
 # Application definition
-
 INSTALLED_APPS = [
     'relationship_app',
     'bookshelf',
@@ -39,12 +36,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'csp',  # Added for Content Security Policy support
 ]
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware',  # Required for HTTPS redirects and HSTS
+    'csp.middleware.CSPMiddleware',  # Added for Content Security Policy
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -68,15 +67,12 @@ TEMPLATES = [
             ],
         },
     },
-
 ]
 
 WSGI_APPLICATION = 'LibraryProject.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -84,10 +80,8 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -103,80 +97,81 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
-
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'static'  # Added for collecting static files in production
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'  # Directory for uploaded files
+
+# Authentication redirects
+LOGIN_REDIRECT_URL = '/'  # Where to go after successful login
+LOGOUT_REDIRECT_URL = 'login'  # Where to go after logout
+LOGIN_URL = 'login'  # Where Django redirects unauthenticated users
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_REDIRECT_URL = '/'       # Where to go after successful login
-LOGOUT_REDIRECT_URL = 'login'  # Where to go after logout
-LOGIN_URL = 'login'            # Where Django redirects unauthenticated users
-MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media' # This will create a 'media' folder in your project root
+# --- HTTPS and Security Settings ---
 
-# --- Additional Security Settings ---
+# Redirect all non-HTTPS requests to HTTPS
+# Ensures all traffic uses secure connections
+SECURE_SSL_REDIRECT = True
 
-# Enforces that cookies (CSRF and Session) are only sent over HTTPS.
-# Crucial for preventing session hijacking and CSRF token leakage over insecure connections.
+# Enable HTTP Strict Transport Security (HSTS)
+# Forces browsers to use HTTPS for one year (31536000 seconds)
+SECURE_HSTS_SECONDS = 31536000
+# Include all subdomains in HSTS policy
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# Allow site to be included in browsers' HSTS preload list
+SECURE_HSTS_PRELOAD = True
+
+# Ensure cookies are only sent over HTTPS
+# Prevents session hijacking and CSRF token leakage over insecure connections
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
-# Adds the X-Content-Type-Options: nosniff header.
-# Prevents browsers from "sniffing" a response's content type away from the
-# declared Content-Type, which can mitigate certain XSS attacks.
+# Prevent browsers from MIME-sniffing responses
+# Mitigates certain XSS attacks by enforcing declared Content-Type
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# Adds the X-XSS-Protection: 1; mode=block header.
-# Activates the browser's built-in XSS filter. If an XSS attack is detected,
-# the browser will prevent rendering of the page.
+# Enable browser's built-in XSS filter
+# Blocks rendering of pages if an XSS attack is detected
 SECURE_BROWSER_XSS_FILTER = True
 
-# Already present in MIDDLEWARE, but good to explicitly mention its purpose.
-# X_FRAME_OPTIONS = 'DENY' # Already handled by django.middleware.clickjacking.XFrameOptionsMiddleware
-# This prevents your site from being embedded in a <frame>, <iframe>, <embed> tag,
-# protecting against clickjacking attacks. 'DENY' is the most secure option.
+# Prevent site from being embedded in frames/iframes
+# Protects against clickjacking attacks
+X_FRAME_OPTIONS = 'DENY'
 
-# --- Content Security Policy (CSP) Settings (for Step 4) ---
-# Requires 'pip install django-csp' and 'csp' in INSTALLED_APPS and MIDDLEWARE.
-# CSP helps mitigate XSS attacks by whitelisting sources of content.
-# Configure these directives carefully based on your actual site's needs.
-# 'default-src' is the fallback for any content type not specified.
-# For development, you might need 'unsafe-inline' or 'unsafe-eval' for styles/scripts,
-# but remove them for production.
+# --- Content Security Policy (CSP) Settings ---
+# Requires 'django-csp' package and 'csp' in INSTALLED_APPS and MIDDLEWARE
+# Mitigates XSS attacks by whitelisting trusted content sources
+CSP_DEFAULT_SRC = ("'self'",)  # Only allow resources from the same origin
+CSP_SCRIPT_SRC = ("'self'",)  # Only allow scripts from the same origin
+CSP_STYLE_SRC = ("'self'",)  # Only allow stylesheets from the same origin
+CSP_IMG_SRC = ("'self'", "data:")  # Allow images from self and data URIs
+CSP_FONT_SRC = ("'self'",)  # Allow fonts from self
+CSP_CONNECT_SRC = ("'self'",)  # Allow connections (fetch, XHR, WebSockets) from self
+CSP_OBJECT_SRC = ("'none'",)  # Disallow <object>, <embed>, <applet>
+CSP_BASE_URI = ("'self'",)  # Only allow <base> URLs from the same origin
+CSP_FORM_ACTION = ("'self'",)  # Only allow form submissions to the same origin
+CSP_FRAME_ANCESTORS = ("'self'",)  # Only allow embedding in iframes from the same origin
 
-CSP_DEFAULT_SRC = ("'self'",) # Only allow resources from the same origin
-CSP_SCRIPT_SRC = ("'self'",) # Only allow scripts from the same origin
-CSP_STYLE_SRC = ("'self'",) # Only allow stylesheets from the same origin
-CSP_IMG_SRC = ("'self'", "data:") # Allow images from self and data URIs (e.g., base64 images)
-CSP_FONT_SRC = ("'self'",) # Allow fonts from self
-CSP_CONNECT_SRC = ("'self'",) # Allow connections (fetch, XHR, WebSockets) from self
-CSP_OBJECT_SRC = ("'none'",) # Disallow <object>, <embed>, <applet>
-CSP_BASE_URI = ("'self'",) # Only allow <base> URLs from the same origin
-CSP_FORM_ACTION = ("'self'",) # Only allow form submissions to the same origin
-CSP_FRAME_ANCESTORS = ("'self'",) # Only allow embedding in iframes from the same origin
-
-# If you use Google Fonts, CDNs, or external scripts/styles, you'll need to add them:
+# Uncomment to allow external resources (e.g., for CDNs or Google Fonts)
 # CSP_SCRIPT_SRC = ("'self'", "https://cdn.jsdelivr.net", "https://code.jquery.com")
 # CSP_STYLE_SRC = ("'self'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com")
 # CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com")
 
-# CSP_REPORT_URI = "/csp-report/" # Optional: URL to send CSP violation reports to
+# Optional: Enable CSP violation reporting
+# CSP_REPORT_URI = "/csp-report/"
