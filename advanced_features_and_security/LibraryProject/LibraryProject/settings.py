@@ -129,6 +129,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Ensures all traffic uses secure connections
 SECURE_SSL_REDIRECT = True
 
+# Tell Django to trust the X-Forwarded-Proto header from the proxy (e.g., Nginx)
+# Ensures Django recognizes HTTPS requests when behind a reverse proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 # Enable HTTP Strict Transport Security (HSTS)
 # Forces browsers to use HTTPS for one year (31536000 seconds)
 SECURE_HSTS_SECONDS = 31536000
