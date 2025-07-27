@@ -22,7 +22,7 @@
         <h2>Confirm Deletion</h2>
         <p>Are you sure you want to delete the book: "<strong>{{ book.title }}</strong>"?</p>
         <form method="post">
-            {% csrf_token %}
+            {% csrf_token %} {# IMPORTANT: This protects against Cross-Site Request Forgery (CSRF) attacks #}
             <div class="button-group">
                 <button type="submit" class="delete">Delete</button>
                 <a href="{% url 'bookshelf:book_list' %}" class="cancel">Cancel</a>

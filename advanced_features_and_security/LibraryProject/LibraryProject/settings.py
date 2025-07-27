@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-9xqsh*8#gqd)*^#k9807%@o96)wv&u@e#6yu7)9+oh_m9tjnx@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'yourdomain.com'] # Example for production
 
 
 # Application definition
@@ -133,3 +133,50 @@ MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media' # This will create a 'media' folder in your project root
 
+# --- Additional Security Settings ---
+
+# Enforces that cookies (CSRF and Session) are only sent over HTTPS.
+# Crucial for preventing session hijacking and CSRF token leakage over insecure connections.
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Adds the X-Content-Type-Options: nosniff header.
+# Prevents browsers from "sniffing" a response's content type away from the
+# declared Content-Type, which can mitigate certain XSS attacks.
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Adds the X-XSS-Protection: 1; mode=block header.
+# Activates the browser's built-in XSS filter. If an XSS attack is detected,
+# the browser will prevent rendering of the page.
+SECURE_BROWSER_XSS_FILTER = True
+
+# Already present in MIDDLEWARE, but good to explicitly mention its purpose.
+# X_FRAME_OPTIONS = 'DENY' # Already handled by django.middleware.clickjacking.XFrameOptionsMiddleware
+# This prevents your site from being embedded in a <frame>, <iframe>, <embed> tag,
+# protecting against clickjacking attacks. 'DENY' is the most secure option.
+
+# --- Content Security Policy (CSP) Settings (for Step 4) ---
+# Requires 'pip install django-csp' and 'csp' in INSTALLED_APPS and MIDDLEWARE.
+# CSP helps mitigate XSS attacks by whitelisting sources of content.
+# Configure these directives carefully based on your actual site's needs.
+# 'default-src' is the fallback for any content type not specified.
+# For development, you might need 'unsafe-inline' or 'unsafe-eval' for styles/scripts,
+# but remove them for production.
+
+CSP_DEFAULT_SRC = ("'self'",) # Only allow resources from the same origin
+CSP_SCRIPT_SRC = ("'self'",) # Only allow scripts from the same origin
+CSP_STYLE_SRC = ("'self'",) # Only allow stylesheets from the same origin
+CSP_IMG_SRC = ("'self'", "data:") # Allow images from self and data URIs (e.g., base64 images)
+CSP_FONT_SRC = ("'self'",) # Allow fonts from self
+CSP_CONNECT_SRC = ("'self'",) # Allow connections (fetch, XHR, WebSockets) from self
+CSP_OBJECT_SRC = ("'none'",) # Disallow <object>, <embed>, <applet>
+CSP_BASE_URI = ("'self'",) # Only allow <base> URLs from the same origin
+CSP_FORM_ACTION = ("'self'",) # Only allow form submissions to the same origin
+CSP_FRAME_ANCESTORS = ("'self'",) # Only allow embedding in iframes from the same origin
+
+# If you use Google Fonts, CDNs, or external scripts/styles, you'll need to add them:
+# CSP_SCRIPT_SRC = ("'self'", "https://cdn.jsdelivr.net", "https://code.jquery.com")
+# CSP_STYLE_SRC = ("'self'", "https://cdn.jsdelivr.net", "https://fonts.googleapis.com")
+# CSP_FONT_SRC = ("'self'", "https://fonts.gstatic.com")
+
+# CSP_REPORT_URI = "/csp-report/" # Optional: URL to send CSP violation reports to

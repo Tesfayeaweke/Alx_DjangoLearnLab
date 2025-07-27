@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% if object %}Edit{% else %}Add{% endif %} Book</title>
+    <title>{{ object|yesno:"Edit,Add" }} Book</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; flex-direction: column; }
         .container { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); width: 400px; text-align: center; }
@@ -23,7 +23,7 @@
 </head>
 <body>
     <div class="container">
-        <h2>{% if object %}Edit{% else %}Add{% endif %} Book</h2>
+        <h2>{{ object|yesno:"Edit,Add" }} Book</h2>
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}
@@ -32,14 +32,14 @@
             </ul>
         {% endif %}
         <form method="post">
-            {% csrf_token %}
+            {% csrf_token %} {# IMPORTANT: This protects against Cross-Site Request Forgery (CSRF) attacks #}
             {{ form.as_p }}
-            <button type="submit">{% if object %}Update{% else %}Create{% endif %} Book</button>
+            <button type="submit">{{ object|yesno:"Update,Create" }} Book</button>
         </form>
         <div class="links">
             <a href="{% url 'bookshelf:book_list' %}">Back to Book List</a>
-            <a href="{% url 'dashboard' %}">Dashboard</a>
-            <a href="{% url 'logout' %}">Logout</a>
+            <a href="{% url 'bookshelf:dashboard' %}">Dashboard</a>
+            <a href="{% url 'bookshelf:logout' %}">Logout</a>
         </div>
     </div>
 </body>
