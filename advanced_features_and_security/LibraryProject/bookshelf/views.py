@@ -10,6 +10,7 @@ from django.contrib.auth.forms import UserCreationForm # For register view
 
 from .models import Book # Import your Book model
 from .forms import BookForm # Import your BookForm
+from .forms import ExampleForm
 
 # Get the CustomUser model, which is defined in relationship_app/models.py
 # This ensures we're always referencing the correct user model.
