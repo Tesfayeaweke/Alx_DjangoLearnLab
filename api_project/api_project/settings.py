@@ -88,6 +88,7 @@ REST_FRAMEWORK = {
 
 
         'rest_framework.authentication.SessionAuthentication', # Allow session auth for web browsable API
+        'rest_framework.permissions.IsAuthenticated'
 
     ],
     'DEFAULT_PERMISSION_CLASSES': [
