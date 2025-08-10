@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 class Author(models.Model):
     """
     The Author model stores information about a book's author.
@@ -28,3 +27,5 @@ class Book(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.publication_year})"
+
+
