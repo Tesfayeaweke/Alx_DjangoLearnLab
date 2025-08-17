@@ -65,8 +65,8 @@ class BookAPITests(APITestCase):
         Should return HTTP 201 Created.
         """
         url = reverse('book-create')
-        # Force authentication for the request
-        self.client.force_authenticate(user=self.user)
+        # Simulate user login for the request
+        self.client.login(username='testuser', password='password123')
         data = {
             'title': 'The Hitchhiker\'s Guide to the Galaxy',
             'publication_year': 1979,
@@ -99,7 +99,8 @@ class BookAPITests(APITestCase):
         Should return HTTP 200 OK.
         """
         url = reverse('book-update')
-        self.client.force_authenticate(user=self.user)
+        # Simulate user login for the request
+        self.client.login(username='testuser', password='password123')
         data = {
             'id': self.book1.id,
             'title': 'New Title',
@@ -134,7 +135,8 @@ class BookAPITests(APITestCase):
         Should return HTTP 204 No Content.
         """
         url = reverse('book-delete')
-        self.client.force_authenticate(user=self.user)
+        # Simulate user login for the request
+        self.client.login(username='testuser', password='password123')
         data = {'id': self.book1.id}
         response = self.client.delete(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
